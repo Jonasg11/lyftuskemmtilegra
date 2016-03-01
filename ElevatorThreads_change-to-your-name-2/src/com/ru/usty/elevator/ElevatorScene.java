@@ -19,7 +19,13 @@ public class ElevatorScene {
 	
 	public static Semaphore elevatorWaitMutex;
 	
+	public static Semaphore elevatorGoOutMutex;
+	
 	public static ElevatorScene scene;
+	
+	public static Semaphore personInElevatorCountMutex;
+	
+	public static int personInElevatorCount = 0;
 	
 	public static boolean elevatorsMayDie;
 
@@ -41,8 +47,6 @@ public class ElevatorScene {
 	//Necessary to add your code in this one
 	public void restartScene(int numberOfFloors, int numberOfElevators) {
 		
-		//semaphore1 = new Semaphore(0);
-		
 		elevatorsMayDie = true;
 		
 		if(elevatorThread != null){
@@ -60,25 +64,11 @@ public class ElevatorScene {
 		
 		scene = this;
 		semaphore1 = new Semaphore(0);
+		personInElevatorCountMutex = new Semaphore(1);
 		personCountMutex = new Semaphore(1);
 		elevatorWaitMutex = new Semaphore(1);
-		
-		elevatorThread = new Thread(new Runnable(){
-			
-			@Override 
-			public void run(){
-				while(true){
-					
-				if(ElevatorScene.elevatorsMayDie){
-					return;
-				}
-				for(int i = 0; i < 16;){
-					
-					ElevatorScene.semaphore1.release(); //signal
-				}
-			}
-			}
-		});
+		elevatorGoOutMutex = new Semaphore(0);
+		Thread elevatorThread = new Thread(new Elevator());
 		elevatorThread.start();
 		
 		
@@ -138,12 +128,31 @@ public class ElevatorScene {
 	//Base function: definition must not change, but add your code
 	public int getNumberOfPeopleInElevator(int elevator) {
 		
-		//dumb code, replace it!
+		/*//dumb code, replace it!
 		switch(elevator) {
 		case 1: return 1;
 		case 2: return 4;
 		default: return 3;
 		}
+		*/
+		return ElevatorScene.personInElevatorCount;
+	}
+	public void decrementNumberOfPeopleInElevator(int elevator){
+		try {
+			ElevatorScene.personInElevatorCountMutex.acquire();
+					ElevatorScene.personInElevatorCount -= 1;
+					System.out.println("mínkar fólk í lyftu");
+			ElevatorScene.personInElevatorCountMutex.release();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public void incrementNumberOfPeopleInElevator(int elevator){
+			ElevatorScene.personInElevatorCount += 1;
+		
+		
 	}
 	
 	public void decrementNumberOfPeopleWaitingAtFloor(int floor){

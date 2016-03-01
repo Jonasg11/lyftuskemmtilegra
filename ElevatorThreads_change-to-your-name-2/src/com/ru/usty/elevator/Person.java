@@ -12,15 +12,30 @@ public class Person implements Runnable{
 			
 			
 			ElevatorScene.elevatorWaitMutex.acquire();
-				ElevatorScene.semaphore1.acquire(); //wait
+			ElevatorScene.personInElevatorCountMutex.acquire();
+			ElevatorScene.semaphore1.acquire(); //wait
 			ElevatorScene.elevatorWaitMutex.release();
+			System.out.println("Fer inni lyftu");
+			ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
+			ElevatorScene.personInElevatorCountMutex.release();
+			ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
+			System.out.println("kominn inní lyftu");
+			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 		
 			e.printStackTrace();
 		
 		} 
-		ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
+		
+		try {
+			ElevatorScene.elevatorGoOutMutex.acquire();
+			ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		System.out.println("Person Thread released");
 	}
 
