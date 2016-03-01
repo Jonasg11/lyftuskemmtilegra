@@ -1,38 +1,78 @@
 package com.ru.usty.elevator;
 
 public class Elevator implements Runnable {
-	int peopleInElevator;
+	int peopleInElevator = 0;
+	int peopleGoingOut = 0;
+	int numberOfFloors = 0;
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while(true){
-			peopleInElevator = 0;
-			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
-			System.out.println("svona margir í lyftuni fyrst" + peopleInElevator);
 			if(ElevatorScene.elevatorsMayDie){
 				return;
 			}
-			
-			for(int i = 0; i < (6 - peopleInElevator); i++){
-				
-			ElevatorScene.semaphore1.release(); //signal
-			System.out.println("býr til pláss í lyfut" + i);
-		}
-			System.out.println("herna ætti persons að fara inn");
-			synchronized(this){
+			numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
+			for(int k = 0; k < numberOfFloors; k++)
+			{
+				ElevatorScene.scene.setCurrentFloorForElevator(k);
 				try {
-					System.out.println("biður numer 1");
-					
-					wait(ElevatorScene.VISUALIZATION_WAIT_TIME);
-					System.out.println("buinn að bíða númer 1");
+					ElevatorScene.personInElevatorCountMutex.acquire();
+					peopleGoingOut = ElevatorScene.scene.getNumberOfPeopleGoingOutAtFloor(k); //byrjum á því að athuga hvort að einhver þurfi að fara út og hleypum þeim þá út
+					for(int i = 0; i < peopleGoingOut; i++)
+					{
+																
+						ElevatorScene.elevatorGoOut.release(); //herna er ég að úthluta leyfum til að fólk meigi fara út
+					}
+					ElevatorScene.personInElevatorCountMutex.release();
 				} catch (InterruptedException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
+				
+				try {
+					Thread.sleep(ElevatorScene.VISUALIZATION_WAIT_TIME);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//herna ættu persons að vera að fara út úr lyftunni
+//------------------------------------------------------------------------------------------------------------------------
+				
+				try {
+					
+					ElevatorScene.personInElevatorCountMutex.acquire();	//her náum við í fjöldan af fólki sem að er í lyftuni og við þurfum að passa að enginn annar sé að breytta því á meðan
+					peopleGoingOut = ElevatorScene.scene.getNumberOfPeopleGoingOutAtFloor(k); //herna er ég að passa að ef að einhver náði ekki að fara út að sá sem að komi næst inn komi ekki inn og fari beint út
+					if(peopleGoingOut != 0){
+						for(int i = 0; i < peopleGoingOut; i++){
+							ElevatorScene.elevatorGoOut.acquire();
+						}
+					}
+					peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1); 
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				for(int i = 0; i < (6 - peopleInElevator); i++)
+				{
+					ElevatorScene.semaphore1.release(); //signal
+				}
+					ElevatorScene.personInElevatorCountMutex.release();
+			}
+			try {
+				Thread.sleep(ElevatorScene.VISUALIZATION_WAIT_TIME);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			
+			//herna ættu persons að fara inní lyftuna
+//------------------------------------------------------------------------------------------------------------------------
 			
-			System.out.println("buinnn að bíða");
+			
+			
+			//herna tjekkum við á því hvort að lyftan sé full, ef að við náum ekki að aquire þá vitum við að hun er full
+			//annars fyllum við hana
 			if(ElevatorScene.elevatorWaitMutex.tryAcquire())
 			{
 				try {
@@ -44,9 +84,7 @@ public class Elevator implements Runnable {
 					e1.printStackTrace();
 				}
 				
-				System.out.println("er að fylla lyftu "+ peopleInElevator);
 				for(int i = 0; i < (6 - peopleInElevator); i++){
-					System.out.println("fyllir lyftur" +i);
 					try {
 						ElevatorScene.semaphore1.acquire();
 					} catch (InterruptedException e) {
@@ -57,23 +95,7 @@ public class Elevator implements Runnable {
 			}
 			}
 			ElevatorScene.elevatorWaitMutex.release();
-			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
-			for(int i = 0; i < peopleInElevator; i++){
-				System.out.println("hleypir fólki út" +i);
-
-				ElevatorScene.elevatorGoOutMutex.release();
-			}
-			synchronized(this){
-				try {
-					System.out.println("biður numer 2");
-					
-					wait(ElevatorScene.VISUALIZATION_WAIT_TIME);
-					System.out.println("buinn að bíða numer 2");
-				} catch (InterruptedException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-			}
+			
 			
 		
 	}

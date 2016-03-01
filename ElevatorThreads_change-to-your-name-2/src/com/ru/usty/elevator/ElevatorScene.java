@@ -19,13 +19,15 @@ public class ElevatorScene {
 	
 	public static Semaphore elevatorWaitMutex;
 	
-	public static Semaphore elevatorGoOutMutex;
+	public static Semaphore elevatorGoOut;
 	
 	public static ElevatorScene scene;
 	
 	public static Semaphore personInElevatorCountMutex;
 	
 	public static int personInElevatorCount = 0;
+	
+	public static int elevatorFloor = 0;
 	
 	public static boolean elevatorsMayDie;
 
@@ -42,7 +44,7 @@ public class ElevatorScene {
 									//throw away and
 									//implement differently
 									//if it suits you
-
+	ArrayList<Integer> personCountGoingOut;
 	//Base function: definition must not change
 	//Necessary to add your code in this one
 	public void restartScene(int numberOfFloors, int numberOfElevators) {
@@ -67,7 +69,7 @@ public class ElevatorScene {
 		personInElevatorCountMutex = new Semaphore(1);
 		personCountMutex = new Semaphore(1);
 		elevatorWaitMutex = new Semaphore(1);
-		elevatorGoOutMutex = new Semaphore(0);
+		elevatorGoOut = new Semaphore(0);
 		Thread elevatorThread = new Thread(new Elevator());
 		elevatorThread.start();
 		
@@ -91,6 +93,10 @@ public class ElevatorScene {
 		personCount = new ArrayList<Integer>();
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.personCount.add(0);
+		}
+		personCountGoingOut = new ArrayList<Integer>();
+		for(int i = 0; i < numberOfFloors; i++) {
+			this.personCountGoingOut.add(0);
 		}
 	}
 
@@ -119,10 +125,13 @@ public class ElevatorScene {
 	//Thread thread = new Thread(Person(sourceFloor, destinationFloor));
 	//thread.start();
 	//Base function: definition must not change, but add your code
+	public void setCurrentFloorForElevator(int elevator){
+		elevatorFloor = elevator;
+	}
 	public int getCurrentFloorForElevator(int elevator) {
 
 		//dumb code, replace it!
-		return 1;
+		return elevatorFloor;
 	}
 
 	//Base function: definition must not change, but add your code
@@ -137,43 +146,33 @@ public class ElevatorScene {
 		*/
 		return ElevatorScene.personInElevatorCount;
 	}
-	public void decrementNumberOfPeopleInElevator(int elevator){
-		try {
-			ElevatorScene.personInElevatorCountMutex.acquire();
-					ElevatorScene.personInElevatorCount -= 1;
-					System.out.println("mínkar fólk í lyftu");
-			ElevatorScene.personInElevatorCountMutex.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	public void decrementNumberOfPeopleInElevator(int elevator)
+	{	
+		ElevatorScene.personInElevatorCount -= 1;
 	}
-	public void incrementNumberOfPeopleInElevator(int elevator){
-			ElevatorScene.personInElevatorCount += 1;
-		
-		
+	public void incrementNumberOfPeopleInElevator(int elevator)
+	{
+		ElevatorScene.personInElevatorCount += 1;
 	}
-	
-	public void decrementNumberOfPeopleWaitingAtFloor(int floor){
-		try {
-			ElevatorScene.personCountMutex.acquire();
-				personCount.set(floor,(personCount.get(floor) - 1));
-			ElevatorScene.personCountMutex.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void decrementNumberOfPeopleGoingOutFloor()
+	{	
+		personCountGoingOut.set(elevatorFloor,(personCountGoingOut.get(elevatorFloor) - 1));
 	}
-	public void incrementNumberOfPeopleWaitingAtFloor(int floor){
-		try {
-			ElevatorScene.personCountMutex.acquire();
-				personCount.set(floor,(personCount.get(floor) + 1));
-			ElevatorScene.personCountMutex.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void incrementNumberOfPeopleGoingOutFloor(int floor)
+	{
+		personCountGoingOut.set(floor,(personCountGoingOut.get(floor) + 1));
+	}
+	public int getNumberOfPeopleGoingOutAtFloor(int floor) 
+	{ 	
+		return personCountGoingOut.get(floor);
+	}
+	public void decrementNumberOfPeopleWaitingAtFloor(int floor)
+	{	
+		personCount.set(floor,(personCount.get(floor) - 1));
+	}
+	public void incrementNumberOfPeopleWaitingAtFloor(int floor)
+	{	
+		personCount.set(floor,(personCount.get(floor) + 1));
 	}
 
 	//Base function: definition must not change, but add your code
@@ -214,6 +213,11 @@ public class ElevatorScene {
 	public boolean isButtonPushedAtFloor(int floor) {
 
 		return (getNumberOfPeopleWaitingAtFloor(floor) > 0);
+	}
+
+	public int getExitedCountAtFloor(int floorNum) {
+		// TODO Auto-generated method stub
+		return personCountGoingOut.get(floorNum);
 	}
 
 }

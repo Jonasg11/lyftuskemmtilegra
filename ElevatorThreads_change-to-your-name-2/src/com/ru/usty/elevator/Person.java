@@ -10,16 +10,14 @@ public class Person implements Runnable{
 	public void run() {
 		try {
 			
-			
 			ElevatorScene.elevatorWaitMutex.acquire();
-			ElevatorScene.personInElevatorCountMutex.acquire();
-			ElevatorScene.semaphore1.acquire(); //wait
+				ElevatorScene.semaphore1.acquire(); //wait
+					ElevatorScene.personInElevatorCountMutex.acquire();
 			ElevatorScene.elevatorWaitMutex.release();
-			System.out.println("Fer inni lyftu");
-			ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
-			ElevatorScene.personInElevatorCountMutex.release();
-			ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
-			System.out.println("kominn inní lyftu");
+						ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
+						ElevatorScene.scene.incrementNumberOfPeopleGoingOutFloor(destinationFloor);
+						ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
+					ElevatorScene.personInElevatorCountMutex.release();
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -29,8 +27,11 @@ public class Person implements Runnable{
 		} 
 		
 		try {
-			ElevatorScene.elevatorGoOutMutex.acquire();
-			ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
+			ElevatorScene.elevatorGoOut.acquire();
+			ElevatorScene.personInElevatorCountMutex.acquire();
+				ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
+				ElevatorScene.scene.decrementNumberOfPeopleGoingOutFloor();
+			ElevatorScene.personInElevatorCountMutex.release();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
