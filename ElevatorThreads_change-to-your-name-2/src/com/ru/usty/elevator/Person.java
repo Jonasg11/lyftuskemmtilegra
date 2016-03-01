@@ -11,13 +11,19 @@ public class Person implements Runnable{
 		try {
 			
 			ElevatorScene.elevatorWaitMutex.acquire();
-				ElevatorScene.semaphore1.acquire(); //wait
-					ElevatorScene.personInElevatorCountMutex.acquire();
+			while(ElevatorScene.scene.getCurrentFloorForElevator(1) != sourceFloor){}
+				ElevatorScene.semaphore1.acquire(); //wait	
+				System.out.println("				Kominn inní lyftu ");
+				ElevatorScene.personInElevatorCountMutex.acquire();
 			ElevatorScene.elevatorWaitMutex.release();
+					
+					
+			
 						ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
 						ElevatorScene.scene.incrementNumberOfPeopleGoingOutFloor(destinationFloor);
 						ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
 					ElevatorScene.personInElevatorCountMutex.release();
+			
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -29,6 +35,7 @@ public class Person implements Runnable{
 		try {
 			ElevatorScene.elevatorGoOut.acquire();
 			ElevatorScene.personInElevatorCountMutex.acquire();
+			System.out.println("				fer ut ur lyftu ");
 				ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
 				ElevatorScene.scene.decrementNumberOfPeopleGoingOutFloor();
 			ElevatorScene.personInElevatorCountMutex.release();

@@ -98,6 +98,7 @@ public class ElevatorScene {
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.personCountGoingOut.add(0);
 		}
+		
 	}
 
 	//Base function: definition must not change

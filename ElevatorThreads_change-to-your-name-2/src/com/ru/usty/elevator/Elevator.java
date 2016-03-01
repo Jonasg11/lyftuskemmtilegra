@@ -4,6 +4,7 @@ public class Elevator implements Runnable {
 	int peopleInElevator = 0;
 	int peopleGoingOut = 0;
 	int numberOfFloors = 0;
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -14,13 +15,16 @@ public class Elevator implements Runnable {
 			numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
 			for(int k = 0; k < numberOfFloors; k++)
 			{
+				System.out.println(k);
 				ElevatorScene.scene.setCurrentFloorForElevator(k);
 				try {
 					ElevatorScene.personInElevatorCountMutex.acquire();
+					
 					peopleGoingOut = ElevatorScene.scene.getNumberOfPeopleGoingOutAtFloor(k); //byrjum á því að athuga hvort að einhver þurfi að fara út og hleypum þeim þá út
+					System.out.println(peopleGoingOut);
 					for(int i = 0; i < peopleGoingOut; i++)
 					{
-																
+						System.out.println("folk fer ut " + i);								
 						ElevatorScene.elevatorGoOut.release(); //herna er ég að úthluta leyfum til að fólk meigi fara út
 					}
 					ElevatorScene.personInElevatorCountMutex.release();
@@ -46,17 +50,21 @@ public class Elevator implements Runnable {
 					{
 						for(int i = 0; i < peopleGoingOut; i++)
 						{
+							System.out.println("ekki allir komsut inn " + i);	
 							ElevatorScene.elevatorGoOut.acquire();
 						}
 					}
-					peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1); 
+					
+					int p = ElevatorScene.scene.getNumberOfPeopleWaitingAtFloor(k);
 					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1); 
 				for(int i = 0; i < (6 - peopleInElevator); i++)
 				{
+					System.out.println("folk ma fara inn " + i);
 					ElevatorScene.semaphore1.release(); //signal
 				}
 					ElevatorScene.personInElevatorCountMutex.release();
@@ -86,9 +94,11 @@ public class Elevator implements Runnable {
 					e1.printStackTrace();
 				}
 				
-				for(int i = 0; i < (6 - peopleInElevator); i++){
+				for(int i = 0; i < (6 - peopleInElevator); i++)
+				{
 					try {
 						ElevatorScene.semaphore1.acquire();
+						System.out.println("fyllum uppi lyftu " + i);	
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -104,7 +114,7 @@ public class Elevator implements Runnable {
 //--------------------------------------------------------------------------------------------------------------------------
 			//fer niður aftur 
 			
-			for(int k = numberOfFloors; k > 0; k-- ){
+			for(int k = numberOfFloors-1; k > 0; k-- ){
 				ElevatorScene.scene.setCurrentFloorForElevator(k);
 				try {
 					ElevatorScene.personInElevatorCountMutex.acquire();
