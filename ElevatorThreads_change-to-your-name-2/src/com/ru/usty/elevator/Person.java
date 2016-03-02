@@ -9,13 +9,14 @@ public class Person implements Runnable{
 	@Override
 	public void run() {
 		try {
-			
-			ElevatorScene.elevatorWaitMutex.acquire();
 			while(ElevatorScene.scene.getCurrentFloorForElevator(1) != sourceFloor){}
+			ElevatorScene.elevatorWaitMutex.acquire();
+			while(ElevatorScene.waitToGoIn) {}
+			ElevatorScene.elevatorWaitMutex.release();
 				ElevatorScene.semaphore1.acquire(); //wait	
 				System.out.println("				Kominn inní lyftu ");
 				ElevatorScene.personInElevatorCountMutex.acquire();
-			ElevatorScene.elevatorWaitMutex.release();
+			
 					
 					
 			

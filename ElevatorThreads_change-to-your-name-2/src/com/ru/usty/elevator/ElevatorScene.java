@@ -30,6 +30,8 @@ public class ElevatorScene {
 	public static int elevatorFloor = 0;
 	
 	public static boolean elevatorsMayDie;
+	
+	public static boolean waitToGoIn = false;
 
 	//TO SPEED THINGS UP WHEN TESTING,
 	//feel free to change this.  It will be changed during grading

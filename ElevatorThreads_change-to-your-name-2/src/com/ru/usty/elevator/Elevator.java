@@ -17,6 +17,9 @@ public class Elevator implements Runnable {
 			{
 				System.out.println(k);
 				ElevatorScene.scene.setCurrentFloorForElevator(k);
+				
+				
+				
 				try {
 					ElevatorScene.personInElevatorCountMutex.acquire();
 					
@@ -55,8 +58,6 @@ public class Elevator implements Runnable {
 						}
 					}
 					
-					int p = ElevatorScene.scene.getNumberOfPeopleWaitingAtFloor(k);
-					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -83,6 +84,11 @@ public class Elevator implements Runnable {
 			
 			//herna tjekkum við á því hvort að lyftan sé full, ef að við náum ekki að aquire þá vitum við að hun er full
 			//annars fyllum við hana
+			if(k+1 != numberOfFloors){
+				ElevatorScene.scene.setCurrentFloorForElevator(k+1);
+			}
+			else ElevatorScene.scene.setCurrentFloorForElevator(k-1);
+			
 			if(ElevatorScene.elevatorWaitMutex.tryAcquire())
 			{
 				try {
