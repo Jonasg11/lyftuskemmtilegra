@@ -10,6 +10,10 @@ import java.util.concurrent.Semaphore;
  * of the operations at will.
  *
  */
+// eg aetla ad bydjast fyrirgefningar a hvad tetta er allt subbulegt og mikid af doti herna
+// planid var ad reyna af snyrta tetta til, en tar sem tetta virkar og hausinn er farinn i sjoinn ta tokum vid enga sjensa
+//Graphicin er samt eitthvad skritinn og setur eins tegar ad folk kemur inn fer tad beint a haedina tar sem ad tad a ad fara ut
+//en er samt enta inni i lyftuni, og hverfur sidan ur lyftunni tegar ad hun kemur a retta haed, tetta verdur ekki lagad
 
 public class ElevatorScene {
 	
@@ -99,6 +103,7 @@ public class ElevatorScene {
 		this.numberOfFloors = numberOfFloors;
 		this.numberOfElevators = numberOfElevators;
 
+		//tetta er allt til tess ad halda utanum tolur a hverri haed fyrir sig
 		personCount = new ArrayList<Integer>();
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.personCount.add(0);

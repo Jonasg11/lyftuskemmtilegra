@@ -19,6 +19,7 @@ public class Elevator implements Runnable
 			}
 			System.out.println("Lyfta a lifi");
 			numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
+			//her erum vid med tvaer while lykkjur, fyrsta til ad fara upp og svo naesta til ad fara nidur
 			while(numberOfFloors-1 > Nfloor){
 				peopleIn(Nfloor);			
 				fillElevator(Nfloor);	
@@ -36,13 +37,14 @@ public class Elevator implements Runnable
 	
 	}
 	private void fillElevator(int floor){
-		if(ElevatorScene.scene.tryToGetSema(floor)){
+		if(ElevatorScene.scene.tryToGetSema(floor)){ //her reynum vid ad na mutexnum sem ad vid notum i person lika, ef ad tad tekst ekki
+													//vitum vid ad lyftan er full og ta turfum vid ekki ad "fylla" hana	
 			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 			
 			for(int i = 0; i < (6 - peopleInElevator); i++)
 			{
 				System.out.println("fyllum lyftu" + i);
-					ElevatorScene.scene.getSemaphore(floor);
+					ElevatorScene.scene.getSemaphore(floor);//tokum semaphorurnar sem ad gefa leyfi fyrir ad fara inni lyftu
 				
 			}
 			ElevatorScene.scene.setWaitSemaphore(floor);
@@ -50,7 +52,8 @@ public class Elevator implements Runnable
 		
 	}
 	private void peopleIn(int floor){
-
+			//herna tjekkum vid hvad tad eru margir i lyftunni
+			ElevatorScene.scene.setCurrentFloorForElevator(floor);
 			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 		
 		
@@ -58,7 +61,7 @@ public class Elevator implements Runnable
 		for(int i = 0; i < (6 - peopleInElevator); i++)
 		{
 			System.out.println("folk ma fara inn" + i);
-			ElevatorScene.scene.setSemaphore(floor);
+			ElevatorScene.scene.setSemaphore(floor); //gefum leyfi fyrir ad fara inni lyftuna
 			//ElevatorScene.semaphore1.release();
 		}
 			
@@ -74,7 +77,7 @@ public class Elevator implements Runnable
 				{
 					System.out.println("Folk ma fara ut" + i);
 
-					ElevatorScene.scene.setOutSemaphore(floor);
+					ElevatorScene.scene.setOutSemaphore(floor); // her gefum vid leyfi til ad fara ut ur lyftunni
 				}
 			Sleep();
 												
