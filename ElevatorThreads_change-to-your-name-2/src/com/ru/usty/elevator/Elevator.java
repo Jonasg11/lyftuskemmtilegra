@@ -31,7 +31,7 @@ public class Elevator implements Runnable
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}*/
+					}
 							peopleGoingOut = ElevatorScene.scene.getNumberOfPeopleGoingOutAtFloor(k);
 					
 							for(int i = 0 ; i < peopleGoingOut; i++)
@@ -48,13 +48,14 @@ public class Elevator implements Runnable
 																// TODO Auto-generated catch block
 																e.printStackTrace();
 															}
-						/*
+						
 						try {
 							ElevatorScene.elevatorWaitMutex.acquire(); //taka leifi til ad fara inni lyftu
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}*/
+						}
+					*/
 								peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 								
 								for(int i = 0; i < (6 - peopleInElevator); i++)
