@@ -33,8 +33,6 @@ public class ElevatorScene {
 	
 	public static int Inelevator = 90;
 	
-	
-	
 	public static boolean elevatorsMayDie;
 	
 	public static boolean waitToGoIn = true;
@@ -52,7 +50,6 @@ public class ElevatorScene {
 									//implement differently
 									//if it suits you
 	ArrayList<Integer> personCountGoingOut;
-	ArrayList<Integer> OUT;
 	ArrayList<Semaphore> semaphoresForFloors;
 	ArrayList<Semaphore> semaphoresForFloorsOut;
 	ArrayList<Semaphore> semaphoresWait;
@@ -109,10 +106,6 @@ public class ElevatorScene {
 		personCountGoingOut = new ArrayList<Integer>();
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.personCountGoingOut.add(0);
-		}
-		OUT = new ArrayList<Integer>();
-		for(int i = 0; i < numberOfFloors; i++) {
-			this.OUT.add(0);
 		}
 		semaphoresForFloorsOut = new ArrayList<Semaphore>();
 		for(int i = 0; i < numberOfFloors; i++) {
@@ -312,9 +305,7 @@ public class ElevatorScene {
 
 	public int getExitedCountAtFloor(int floorNum) {
 		// TODO Auto-generated method stub
-		int hallo = OUT.get(floorNum);
-		OUT.set(floorNum, 0);
-		return hallo;
+		return personCountGoingOut.get(floorNum);
 	}
 
 }
