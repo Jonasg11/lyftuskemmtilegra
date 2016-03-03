@@ -19,18 +19,19 @@ public class Elevator implements Runnable
 			}
 			System.out.println("Lyfta a lifi");
 			numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
-			while(numberOfFloors-1 > Nfloor){
+			//while(numberOfFloors-1 > Nfloor){
 				peopleIn(Nfloor);			
 				fillElevator();	
 				Nfloor++;
 				peopleOut(Nfloor);
-			}
-			while(0 < Nfloor){
+				Nfloor--;
+			//}
+			/*while(0 < Nfloor){
 				peopleIn(Nfloor);			
 				fillElevator();	
 				Nfloor--;
 				peopleOut(Nfloor);
-			}
+			}*/
 				
 		}
 	
