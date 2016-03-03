@@ -36,7 +36,7 @@ public class Elevator implements Runnable
 	
 	}
 	private void fillElevator(int floor){
-		if(ElevatorScene.elevatorWaitMutex.tryAcquire()){
+		if(ElevatorScene.scene.tryToGetSema(floor)){
 			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 			
 			for(int i = 0; i < (6 - peopleInElevator); i++)
@@ -45,12 +45,15 @@ public class Elevator implements Runnable
 					ElevatorScene.scene.getSemaphore(floor);
 				
 			}
-			
+			ElevatorScene.scene.setWaitSemaphore(floor);
 		}
-		ElevatorScene.elevatorWaitMutex.release();
+		
 	}
 	private void peopleIn(int floor){
-		peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
+
+			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
+		
+		
 		
 		for(int i = 0; i < (6 - peopleInElevator); i++)
 		{

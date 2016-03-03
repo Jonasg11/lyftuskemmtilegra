@@ -52,6 +52,7 @@ public class ElevatorScene {
 	ArrayList<Integer> personCountGoingOut;
 	ArrayList<Semaphore> semaphoresForFloors;
 	ArrayList<Semaphore> semaphoresForFloorsOut;
+	ArrayList<Semaphore> semaphoresWait;
 	//Base function: definition must not change
 	//Necessary to add your code in this one
 	public void restartScene(int numberOfFloors, int numberOfElevators) {
@@ -106,14 +107,17 @@ public class ElevatorScene {
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.personCountGoingOut.add(0);
 		}
-		
+		semaphoresForFloorsOut = new ArrayList<Semaphore>();
+		for(int i = 0; i < numberOfFloors; i++) {
+			this.semaphoresForFloorsOut.add(new Semaphore(0));
+		}
 		semaphoresForFloors = new ArrayList<Semaphore>();
 		for(int i = 0; i < numberOfFloors; i++) {
 			this.semaphoresForFloors.add(new Semaphore(0));
 		}
-		semaphoresForFloorsOut = new ArrayList<Semaphore>();
+		semaphoresWait = new ArrayList<Semaphore>();
 		for(int i = 0; i < numberOfFloors; i++) {
-			this.semaphoresForFloorsOut.add(new Semaphore(0));
+			this.semaphoresWait.add(new Semaphore(1));
 		}
 		
 	}
@@ -154,6 +158,22 @@ public class ElevatorScene {
 	public void setSemaphore(int floor){
 		
 			semaphoresForFloors.get(floor).release();	
+		
+	}
+	public boolean tryToGetSema(int floor){
+		return semaphoresWait.get(floor).tryAcquire();
+	}
+	public void getWaitSemaphore(int floor){
+		try {
+			semaphoresWait.get(floor).acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void setWaitSemaphore(int floor){
+		
+			semaphoresWait.get(floor).release();	
 		
 	}
 	public void getOutSemaphore(int floor){
@@ -209,6 +229,7 @@ public class ElevatorScene {
 	public void decrementNumberOfPeopleGoingOutFloor(int floor)
 	{	
 		personCountGoingOut.set(floor,(personCountGoingOut.get(floor) - 1));
+		
 	}
 	public void incrementNumberOfPeopleGoingOutFloor(int floor)
 	{

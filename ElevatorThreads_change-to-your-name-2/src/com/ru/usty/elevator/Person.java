@@ -9,8 +9,9 @@ public class Person implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("Persona til " + sourceFloor + destinationFloor);
-						
+						ElevatorScene.scene.getWaitSemaphore(sourceFloor);
 					ElevatorScene.scene.getSemaphore(sourceFloor);
+						ElevatorScene.scene.setWaitSemaphore(sourceFloor);
 						System.out.println("Kominn inn");
 						
 					ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
