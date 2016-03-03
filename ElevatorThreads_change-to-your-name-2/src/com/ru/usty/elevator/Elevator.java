@@ -132,7 +132,7 @@ public class Elevator implements Runnable
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}*/
+						}
 								peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 								
 								for(int i = 0; i < (6 - peopleInElevator); i++)
@@ -170,7 +170,7 @@ public class Elevator implements Runnable
 									}
 									ElevatorScene.elevatorWaitMutex.release();
 								}
-						
+						*/
 									
 									
 				}
