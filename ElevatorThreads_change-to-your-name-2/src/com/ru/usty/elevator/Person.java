@@ -9,23 +9,22 @@ public class Person implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("Persona til");
-			try {
+						try {
 				ElevatorScene.elevatorWaitMutex.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-			try {
-				ElevatorScene.semaphore1.acquire();
-				System.out.println("	Komst inn i lyftu");
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			ElevatorScene.elevatorWaitMutex.release();
-				ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
-				ElevatorScene.scene.incrementNumberOfPeopleGoingOutFloor(destinationFloor);
-				ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
+				
+					ElevatorScene.semaphore1.acquire();
+					System.out.println("		KOMINN INN");
+				ElevatorScene.elevatorWaitMutex.release();
+				
+					ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
+					ElevatorScene.scene.incrementNumberOfPeopleGoingOutFloor(destinationFloor);
+					ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}		
+						
+			
 				
 					
 					
