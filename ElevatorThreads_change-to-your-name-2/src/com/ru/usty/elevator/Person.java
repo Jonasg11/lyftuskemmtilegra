@@ -20,6 +20,7 @@ public class Person implements Runnable{
 						
 	
 						ElevatorScene.scene.getOutSemaphore(destinationFloor);
+						ElevatorScene.scene.OUT.set(destinationFloor, (ElevatorScene.scene.OUT.get(destinationFloor)+1));
 						ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
 						ElevatorScene.scene.decrementNumberOfPeopleGoingOutFloor(destinationFloor);
 					
