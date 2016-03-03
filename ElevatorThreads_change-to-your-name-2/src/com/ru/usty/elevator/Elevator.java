@@ -19,40 +19,35 @@ public class Elevator implements Runnable
 			}
 			System.out.println("Lyfta a lifi");
 			numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
-			//while(numberOfFloors-1 > Nfloor){
+			while(numberOfFloors-1 > Nfloor){
 				peopleIn(Nfloor);			
-				fillElevator();	
+				fillElevator(Nfloor);	
 				Nfloor++;
 				peopleOut(Nfloor);
-				Nfloor--;
-			//}
-			/*while(0 < Nfloor){
+			}
+			while(0 < Nfloor){
 				peopleIn(Nfloor);			
-				fillElevator();	
+				fillElevator(Nfloor);	
 				Nfloor--;
 				peopleOut(Nfloor);
-			}*/
+			}
 				
 		}
 	
 	}
-	private void fillElevator(){
+	private void fillElevator(int floor){
 		if(ElevatorScene.elevatorWaitMutex.tryAcquire()){
 			peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
 			
 			for(int i = 0; i < (6 - peopleInElevator); i++)
 			{
 				System.out.println("fyllum lyftu" + i);
-
-				try {
-					ElevatorScene.semaphore1.acquire();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					ElevatorScene.scene.getSemaphore(floor);
+				
 			}
-			ElevatorScene.elevatorWaitMutex.release();
+			
 		}
+		ElevatorScene.elevatorWaitMutex.release();
 	}
 	private void peopleIn(int floor){
 		peopleInElevator = ElevatorScene.scene.getNumberOfPeopleInElevator(1);
@@ -60,8 +55,8 @@ public class Elevator implements Runnable
 		for(int i = 0; i < (6 - peopleInElevator); i++)
 		{
 			System.out.println("folk ma fara inn" + i);
-
-			ElevatorScene.semaphore1.release();
+			ElevatorScene.scene.setSemaphore(floor);
+			//ElevatorScene.semaphore1.release();
 		}
 			
 		Sleep();
@@ -76,7 +71,7 @@ public class Elevator implements Runnable
 				{
 					System.out.println("Folk ma fara ut" + i);
 
-					ElevatorScene.elevatorGoOut.release();
+					ElevatorScene.scene.setOutSemaphore(floor);
 				}
 			Sleep();
 												

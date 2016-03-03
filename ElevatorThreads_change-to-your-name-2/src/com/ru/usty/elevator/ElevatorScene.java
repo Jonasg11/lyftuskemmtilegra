@@ -19,6 +19,8 @@ public class ElevatorScene {
 	
 	public static Semaphore elevatorWaitMutex;
 	
+	public static Semaphore elevatorThroughMutex;
+	
 	public static Semaphore elevatorGoOut;
 	
 	public static ElevatorScene scene;
@@ -28,6 +30,8 @@ public class ElevatorScene {
 	public static int personInElevatorCount = 0;
 	
 	public static int elevatorFloor = 90;
+	
+	public static int Inelevator = 90;
 	
 	public static boolean elevatorsMayDie;
 	
@@ -41,12 +45,13 @@ public class ElevatorScene {
 	private int numberOfElevators;
 
 	private Thread elevatorThread = null;
-	
 	ArrayList<Integer> personCount; //use if you want but
 									//throw away and
 									//implement differently
 									//if it suits you
 	ArrayList<Integer> personCountGoingOut;
+	ArrayList<Semaphore> semaphoresForFloors;
+	ArrayList<Semaphore> semaphoresForFloorsOut;
 	//Base function: definition must not change
 	//Necessary to add your code in this one
 	public void restartScene(int numberOfFloors, int numberOfElevators) {
@@ -71,6 +76,7 @@ public class ElevatorScene {
 		personInElevatorCountMutex = new Semaphore(1);
 		personCountMutex = new Semaphore(1);
 		elevatorWaitMutex = new Semaphore(1);
+		elevatorThroughMutex = new Semaphore(1);
 		elevatorGoOut = new Semaphore(0);
 		Thread elevatorThread = new Thread(new Elevator());
 		elevatorThread.start();
@@ -101,6 +107,15 @@ public class ElevatorScene {
 			this.personCountGoingOut.add(0);
 		}
 		
+		semaphoresForFloors = new ArrayList<Semaphore>();
+		for(int i = 0; i < numberOfFloors; i++) {
+			this.semaphoresForFloors.add(new Semaphore(0));
+		}
+		semaphoresForFloorsOut = new ArrayList<Semaphore>();
+		for(int i = 0; i < numberOfFloors; i++) {
+			this.semaphoresForFloorsOut.add(new Semaphore(0));
+		}
+		
 	}
 
 	//Base function: definition must not change
@@ -128,6 +143,32 @@ public class ElevatorScene {
 	//Thread thread = new Thread(Person(sourceFloor, destinationFloor));
 	//thread.start();
 	//Base function: definition must not change, but add your code
+	public void getSemaphore(int floor){
+		try {
+			semaphoresForFloors.get(floor).acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void setSemaphore(int floor){
+		
+			semaphoresForFloors.get(floor).release();	
+		
+	}
+	public void getOutSemaphore(int floor){
+		try {
+			semaphoresForFloorsOut.get(floor).acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void setOutSemaphore(int floor){
+		
+			semaphoresForFloorsOut.get(floor).release();	
+		
+	}
 	public void setCurrentFloorForElevator(int elevator){
 		ElevatorScene.elevatorFloor = elevator;
 	}

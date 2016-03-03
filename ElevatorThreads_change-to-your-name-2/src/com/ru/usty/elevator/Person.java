@@ -8,39 +8,24 @@ public class Person implements Runnable{
 	}
 	@Override
 	public void run() {
-		System.out.println("Persona til");
-						try {
-				ElevatorScene.elevatorWaitMutex.acquire();
-				
-					ElevatorScene.semaphore1.acquire();
-					System.out.println("		KOMINN INN");
-				ElevatorScene.elevatorWaitMutex.release();
-				
+		System.out.println("Persona til " + sourceFloor + destinationFloor);
+						
+					ElevatorScene.scene.getSemaphore(sourceFloor);
+						System.out.println("Kominn inn");
+						
 					ElevatorScene.scene.incrementNumberOfPeopleInElevator(1);
 					ElevatorScene.scene.incrementNumberOfPeopleGoingOutFloor(destinationFloor);
 					ElevatorScene.scene.decrementNumberOfPeopleWaitingAtFloor(sourceFloor);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}		
 						
-			
-				
-					
-					
-					try {
-						ElevatorScene.elevatorGoOut.acquire();
+	
+						ElevatorScene.scene.getOutSemaphore(destinationFloor);
 						ElevatorScene.scene.decrementNumberOfPeopleInElevator(1);
 						ElevatorScene.scene.decrementNumberOfPeopleGoingOutFloor(destinationFloor);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
 					
 					System.out.println("		farinn út");
 					
-		
-		
-
-	}
+	
+					
+}
 }
