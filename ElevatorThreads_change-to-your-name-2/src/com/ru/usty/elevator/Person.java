@@ -11,13 +11,13 @@ public class Person implements Runnable{
 		System.out.println("Persona til");
 			try {
 				ElevatorScene.elevatorWaitMutex.acquire();
-				System.out.println("nadi fyrstu semaphore");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 			try {
 				ElevatorScene.semaphore1.acquire();
+				System.out.println("	Komst inn i lyftu");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -38,7 +38,7 @@ public class Person implements Runnable{
 						e.printStackTrace();
 					}
 					
-					System.out.println("farinn út");
+					System.out.println("		farinn út");
 					
 		
 		

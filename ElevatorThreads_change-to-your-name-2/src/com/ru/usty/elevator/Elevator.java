@@ -19,8 +19,9 @@ public class Elevator implements Runnable
 			System.out.println("Lyfta a lifi");
 
 				numberOfFloors = ElevatorScene.scene.getNumberOfFloors();
-				for(int k = 0; k < numberOfFloors; k++)
+				for(int k = 1; k < numberOfFloors; k++)
 				{
+					System.out.println("hæð " + k);
 
 					ElevatorScene.scene.setCurrentFloorForElevator(k); //segjum a hvada haed lyftan er
 					
@@ -97,9 +98,9 @@ public class Elevator implements Runnable
 									
 									
 				}
-				for(int k = numberOfFloors; k > 0; k--)
+				for(int k = numberOfFloors; k > 1; k--)
 				{
-
+					System.out.println("hæð " + k);
 					ElevatorScene.scene.setCurrentFloorForElevator(k); //segjum a hvada haed lyftan er
 					
 					
